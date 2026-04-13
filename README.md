@@ -8,7 +8,7 @@ PulseClick 是一款轻量级、跨平台的鼠标自动化连点器软件，设
 
 - **轻量**：最小依赖，快速启动，运行时内存占用 < 50MB
 - **简约**：卡片式布局，零学习成本，所有核心操作一目了然
-- **跨平台**：支持 Windows、Linux 和 macOS
+- **跨平台**：支持 Windows 和 Linux
 - **可靠**：毫秒级计时精度，长时间运行稳定不崩溃
 - **安全**：开源透明，无广告无后门，配置本地存储
 
@@ -60,27 +60,6 @@ PulseClick 是一款轻量级、跨平台的鼠标自动化连点器软件，设
    python build.py
    # 运行打包后的程序
    dist\PulseClick.exe
-   ```
-
-### macOS 版本
-
-1. **从发布版安装**：
-   - 访问 [GitHub Releases](https://github.com/wxpacc/PulseClick/releases) 页面
-   - 下载 `PulseClick.app` 文件
-   - 双击运行即可，无需安装
-
-2. **从源码构建**：
-   ```bash
-   git clone https://github.com/wxpacc/PulseClick.git
-   cd PulseClick
-   python3 -m venv venv
-   source venv/bin/activate
-   pip3 install -r requirements.txt
-   python3 src/main.py
-   # 打包
-   python3 build.py
-   # 运行打包后的程序
-   open dist/PulseClick.app
    ```
 
 ### Linux 版本
@@ -160,14 +139,14 @@ PulseClick/
 ### 构建与发布
 
 - **打包命令**：`python build.py`
-- **目标平台**：Windows (.exe)、Linux (AppImage)、macOS (.app)
-- **打包大小**：Windows < 20MB，Linux < 25MB，macOS < 30MB
+- **目标平台**：Windows (.exe)、Linux (可执行文件)
+- **打包大小**：Windows < 20MB，Linux < 25MB
 
 ## 竞品对比
 
 | 特性 | PulseClick | OP Auto Clicker | MouseClickTool | clicker.rs | rusty-autoclicker |
 |------|-----------|----------------|---------------|-----------|-------------------|
-| 跨平台 | ✅ Win/Mac/Linux | ❌ Win Only | ❌ Win Only | ✅ | ✅ |
+| 跨平台 | ✅ Win/Linux | ❌ Win Only | ❌ Win Only | ✅ | ✅ |
 | 轻量级 | ✅ <50MB | ✅ 1.13MB | ✅ 16KB | ✅ ~3MB | ✅ ~5MB |
 | 现代UI | ✅ PySide6 | ✅ | ✅ | ✅ Iced | ✅ Iced |
 | 全局热键 | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -180,7 +159,7 @@ PulseClick/
 
 ## 版本规划
 
-### v1.0 - 核心版
+### v1.0 - 核心版（✅ 已实现）
 - 点击引擎（按钮/模式/间隔/重复/位置）
 - 全局热键
 - 系统托盘
@@ -190,18 +169,12 @@ PulseClick/
 - 实时状态显示
 - 打包发布
 
-### v2.0 - 增强版
+### v2.0 - 增强版（⏳ 开发中）
 - 键盘按键自动化
-- 宏录制与回放
 - 多显示器支持
-- 浅色主题
-- 命令行参数支持
 
-### v3.0 - 专业版
-- 颜色检测触发
-- 图像识别触发
-- 脚本编辑器
-- 插件系统
+### v3.0 - 专业版（📋 规划中）
+（暂未规划）
 
 ## 贡献指南
 
