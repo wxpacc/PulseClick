@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1A1A2E"/>
+      <stop offset="1" stop-color="#16213E"/>
+    </linearGradient>
+    <linearGradient id="cursorGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4FC3F7"/>
+      <stop offset="1" stop-color="#00BCD4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="52" fill="url(#bg)"/>
+
+  <circle cx="120" cy="120" r="90" fill="none" stroke="#4FC3F7" stroke-width="1.5" opacity="0.12"/>
+  <circle cx="120" cy="120" r="68" fill="none" stroke="#4FC3F7" stroke-width="2" opacity="0.22"/>
+  <circle cx="120" cy="120" r="46" fill="none" stroke="#4FC3F7" stroke-width="2.5" opacity="0.38"/>
+  <circle cx="120" cy="120" r="24" fill="none" stroke="#4FC3F7" stroke-width="3" opacity="0.55"/>
+
+  <path d="M120 120 L120 210 L140 184 L158 220 L172 213 L154 177 L180 177 Z"
+        fill="url(#cursorGrad)" stroke="#E0F7FA" stroke-width="1" stroke-linejoin="round" opacity="0.95"/>
+
+  <circle cx="120" cy="120" r="5" fill="#FFFFFF" opacity="0.9"/>
+</svg>
