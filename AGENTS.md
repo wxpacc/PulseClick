@@ -88,6 +88,42 @@ PulseClick/
 - GUI 线程只更新界面；后台线程通过 Qt Signal 或线程安全回调回到 UI。
 - 文件写入必须限制在程序根目录的 `data/` 或仓库工作区。
 - 不测试 GUI 渲染；测试配置、热键解析、点击引擎状态机和便携路径逻辑。
+- 面向用户和维护者的文本必须优先使用中文，包括 README、发布说明、界面文案、错误提示和维护规范。
+- 代码标识符、模块名、类名、函数名、配置键和提交类型保持英文。
+
+## 提交规范
+
+所有提交信息使用约定式提交（Conventional Commits）。
+
+格式：
+
+```text
+<type>(<scope>): <subject>
+```
+
+允许的 `type`：
+
+```text
+feat, fix, docs, test, build, refactor, chore, style, perf, ci
+```
+
+规则：
+
+- `type` 和 `scope` 使用小写英文。
+- `subject` 使用简洁的祈使句英文，不以标点结尾。
+- 默认使用英文提交信息，便于工具解析和生成变更日志。
+- 不兼容变更使用 `!` 或 `BREAKING CHANGE:` 标记。
+
+示例：
+
+```text
+feat(clicker): add triple click mode
+fix(hotkey): handle occupied global hotkeys
+docs(readme): document portable uninstall flow
+build(pyinstaller): fix onefile exe packaging
+test(config): cover portable data paths
+feat(storage)!: move config storage into portable data directory
+```
 
 ## 打包与发布
 
@@ -98,4 +134,3 @@ PulseClick/
 - `build\`、`PulseClick.spec`、`dist\data\` 都是可清理文件。
 - 发布前确认 `dist\PulseClick.exe` 能启动，并删除 `dist\data\`。
 - 发布说明必须提示：自动点击工具可能被部分游戏、反作弊或安全软件限制，用户应遵守相关平台规则。
-
