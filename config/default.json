@@ -1,0 +1,16 @@
+{
+  "button": "left",
+  "click_type": "single",
+  "interval_ms": 100,
+  "repeat_mode": "infinite",
+  "repeat_count": 1000,
+  "position_mode": "follow",
+  "fixed_x": 0,
+  "fixed_y": 0,
+  "random_enabled": false,
+  "random_min": 80,
+  "random_max": 120,
+  "hotkey": "F6",
+  "profile_name": "默认"
+}
+

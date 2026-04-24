@@ -1,0 +1,2 @@
+"""PulseClick tests."""
+

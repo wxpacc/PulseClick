@@ -51,6 +51,8 @@ logs/
 
 # Runtime config (user-specific)
 .pulseclick/
+data/*
+!data/.gitkeep
 
 # Test artifacts
 .pytest_cache/

@@ -1,315 +1,93 @@
-# PulseClick - 轻量级连点器
+# PulseClick - Windows 专用轻量级连点器
 
-## 项目概述
+## 项目定位
 
-PulseClick 是一款轻量级、跨平台的鼠标自动化连点器软件。设计理念为"简约而不简单"——界面清爽、操作直觉、功能充足、资源占用极低。适用于游戏辅助、办公自动化、软件测试等场景。
+PulseClick 是一款面向 Windows 10/11 的轻量级鼠标自动化连点器。产品目标是启动快、界面清爽、设置直觉、后台热键稳定、配置本地保存，并尽量减少第三方依赖。
 
-## 设计哲学
+## 设计原则
 
 | 原则 | 说明 |
 |------|------|
-| **轻量** | 最小依赖，快速启动，运行时内存占用 < 50MB |
-| **简约** | 卡片式布局，零学习成本，所有核心操作一目了然 |
-| **跨平台** | Windows / Linux 全支持 |
-| **可靠** | 毫秒级计时精度，长时间运行稳定不崩溃 |
-| **安全** | 开源透明，无广告无后门，配置本地存储 |
+| Windows 专用 | 不承诺 Linux/macOS；输入、热键、配置路径、打包流程均以 Windows 原生体验为准 |
+| 轻量 | 依赖最少化，优先标准库和 Win32 API，运行时内存目标 < 50MB |
+| 简约 | 单窗口卡片式布局，核心设置一屏可见，零学习成本 |
+| 可靠 | 点击线程可停止、热键可注销、退出时清理后台资源 |
+| 本地安全 | 无联网、无广告、无后门；配置、档案和日志只写入项目内 `data/` |
 
 ## 技术选型
 
-| 技术 | 用途 | 选择理由 |
-|------|------|----------|
-| Python 3.10+ | 主语言 | 跨平台、生态丰富、开发效率高 |
-| PySide6 | GUI框架 | 原生 Qt 渲染、精美现代UI、跨平台一致体验、QSS样式支持 |
-| pynput | 鼠标/键盘控制 | 跨平台全局热键+事件模拟、API简洁 |
-| PyInstaller | 打包工具 | 单文件可执行、免安装便携 |
-| JSON | 配置持久化 | 人类可读、Python原生支持、轻量 |
+| 技术 | 用途 | 规则 |
+|------|------|------|
+| Python 3.10+ | 主语言 | 使用类型注解和 dataclass |
+| PySide6 | GUI | 保留 Qt 原生渲染和 QSS 深色主题 |
+| ctypes + Win32 API | 输入和热键 | 鼠标点击使用 `SendInput`，全局热键使用 `RegisterHotKey` |
+| PyInstaller | 打包 | 仅生成 Windows 单文件 `PulseClick.exe` |
+| JSON | 配置持久化 | 人类可读，便于备份和迁移 |
 
-## 功能规格
+禁止重新引入跨平台输入库作为默认后端，例如 `pynput`。只有在明确做兼容实验时，才能放入隔离模块且不得改变 Windows 默认路径。
 
-### 核心功能（v1.0 MVP）
+## v1 功能范围
 
-#### 1. 点击引擎
-- 鼠标按钮选择：左键 / 右键 / 中键
-- 点击模式：单击 / 双击
-- 点击间隔：1ms ~ 3600000ms（1小时），支持毫秒级精度
-- 重复模式：无限循环 / 指定次数（1 ~ 999999）
-- 位置模式：跟随光标 / 固定坐标
-- 坐标拾取：一键获取当前鼠标屏幕坐标
-
-#### 2. 全局热键
-- 开始/停止热键（默认 F6）
-- 支持组合键（Ctrl+Alt+X 等）
-- 热键自定义，冲突检测
-
-#### 3. 系统托盘
-- 最小化到系统托盘
-- 托盘右键菜单：显示主窗口 / 开始 / 停止 / 退出
-- 托盘图标状态指示（运行中/空闲）
-
-#### 4. 配置持久化
-- 自动保存当前所有设置
-- 启动时自动恢复上次配置
-- JSON 格式存储，便于手动编辑/备份
-- 配置文件路径：`~/.pulseclick/config.json`
-
-#### 5. 配置档案
-- 保存多组配置档案
-- 快速切换不同场景配置
-- 档案重命名与删除
-
-#### 6. 随机延迟（防检测）
-- 启用/禁用随机延迟
-- 最小/最大间隔设置
-- 模拟人类点击节奏
-
-#### 7. 实时状态显示
-- 运行状态指示（绿色运行/灰色空闲）
-- 实时 CPS（每秒点击次数）
-- 已完成点击计数
-- 运行时长计时
-
-## 界面设计
-
-### 布局方案
-
-```
-┌───────────────────────────────────────────┐
-│  PulseClick                           ─ □ ✕ │
-├───────────────────────────────────────────┤
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │  核心设置                           │  │
-│  ├─────────────────────────────────────┤  │
-│  │  鼠标按钮: 左 ○ 右 ○ 中 ○           │  │
-│  │  点击类型: 单击 ○ 双击 ○            │  │
-│  │  点击间隔: [100] ms                 │  │
-│  │  重复模式: 无限 ○ 次数 ○ [100]       │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │  位置设置                           │  │
-│  ├─────────────────────────────────────┤  │
-│  │  位置模式: 跟随 ○ 固定 ○            │  │
-│  │  固定坐标: X: [640]  Y: [480]       │  │
-│  │  [拾取坐标]                          │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │  高级设置                           │  │
-│  ├─────────────────────────────────────┤  │
-│  │  [x] 启用随机延迟                   │  │
-│  │  延迟范围: [80] ms - [120] ms       │  │
-│  │  配置档案: [默认] [保存] [加载]      │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │  热键设置                           │  │
-│  ├─────────────────────────────────────┤  │
-│  │  启停热键: [F6] [修改]              │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │  状态面板                           │  │
-│  ├─────────────────────────────────────┤  │
-│  │  ● 空闲  │ CPS: 0.0  │ 点击: 0      │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│              [ ▶ 启动 ]                  │
-│                                           │
-└───────────────────────────────────────────┘
-```
-
-### 视觉规范
-- 主题：深色主题（默认）
-- 主色调：#1a1a2e（背景）、#16213e（卡片）、#0f3460（强调）、#e94560（高亮/运行状态）
-- 字体：系统默认无衬线字体，12px 正文 / 14px 标题
-- 圆角：8px（卡片）、6px（按钮）、4px（输入框）
-- 间距：10px 基准网格，组内间距 12px
-- 窗口尺寸：380×600px
-- 控件高度：24px 基准，按钮高度 28px
-- 输入框宽度：90px（数值输入），120px（下拉选择）
-- 按钮宽度：50-60px（小按钮），120px（主按钮）
+- 鼠标按钮：左键、右键、中键
+- 点击类型：单击、双击、三击
+- 点击间隔：1ms 到 3600000ms
+- 重复模式：无限循环或指定次数
+- 位置模式：跟随光标或固定坐标
+- 坐标拾取：覆盖层点击拾取屏幕坐标
+- 全局热键：默认 F6，支持 Ctrl/Alt/Shift/Win 组合键
+- 系统托盘：显示主窗口、开始、停止、退出
+- 配置持久化：`data\config.json`
+- 配置档案：`data\profiles\`
+- 日志文件：`data\logs\pulseclick.log`
+- 随机延迟：可设置最小/最大间隔
+- 实时状态：运行状态、CPS、点击计数、运行时长
 
 ## 项目结构
 
-```
+```text
 PulseClick/
-├── src/
-│   ├── __init__.py
-│   ├── main.py                 # 应用入口
-│   ├── app.py                  # 应用主类（生命周期管理）
-│   ├── ui/
-│   │   ├── __init__.py
-│   │   ├── main_window.py      # 主窗口
-│   │   ├── widgets.py          # 自定义组件
-│   │   ├── styles.py           # QSS 样式定义
-│   │   └── dialogs.py          # 对话框（坐标拾取、档案管理）
-│   ├── core/
-│   │   ├── __init__.py
-│   │   ├── clicker.py          # 点击引擎（核心逻辑）
-│   │   ├── hotkey.py           # 全局热键管理
-│   │   └── recorder.py         # 坐标拾取器
-│   └── utils/
-│       ├── __init__.py
-│       ├── config.py           # 配置读写与档案管理
-│       ├── tray.py             # 系统托盘
-│       └── logger.py           # 日志工具
-├── resources/
-│   ├── icon.png                # 应用图标
-│   ├── tray.png                # 托盘图标
-│   └── styles.qss              # 样式文件
-├── config/
-│   └── default.json            # 默认配置模板
-├── tests/
-│   ├── __init__.py
-│   ├── test_clicker.py
-│   ├── test_hotkey.py
-│   ├── test_config.py
-│   └── test_integration.py
+├── main.py
+├── build.py
 ├── requirements.txt
-├── setup.py
-├── build.py                    # PyInstaller 打包脚本
-├── agents.md
-└── .ignore
-```
-
-## 核心模块设计
-
-### clicker.py - 点击引擎
-
-```python
-class ClickEngine:
-    """核心点击引擎，运行在独立线程中"""
-
-    def __init__(self, config: ClickConfig):
-        self.config = config
-        self._running = False
-        self._thread: threading.Thread | None = None
-        self._click_count = 0
-        self._start_time: float | None = None
-
-    def start(self) -> None: ...
-    def stop(self) -> None: ...
-    def _click_loop(self) -> None: ...
-    def _perform_click(self, x: int, y: int) -> None: ...
-    def get_cps(self) -> float: ...
-    def get_click_count(self) -> int: ...
-    def get_elapsed(self) -> float: ...
-
-@dataclass
-class ClickConfig:
-    button: str = "left"           # left / right / middle
-    click_type: str = "single"     # single / double
-    interval_ms: int = 100
-    repeat_mode: str = "infinite"  # infinite / count
-    repeat_count: int = 1000
-    position_mode: str = "follow"  # follow / fixed
-    fixed_x: int = 0
-    fixed_y: int = 0
-    random_enabled: bool = False
-    random_min: int = 80
-    random_max: int = 120
-```
-
-### hotkey.py - 全局热键
-
-```python
-class HotkeyManager:
-    """全局热键管理，基于 pynput"""
-
-    def __init__(self):
-        self._hotkeys: dict[str, Callable] = {}
-        self._listener: keyboard.Listener | None = None
-
-    def register(self, key_combo: str, callback: Callable) -> None: ...
-    def unregister(self, key_combo: str) -> None: ...
-    def start_listening(self) -> None: ...
-    def stop_listening(self) -> None: ...
-    def parse_combo(self, combo_str: str) -> tuple: ...
-```
-
-### config.py - 配置管理
-
-```python
-class ConfigManager:
-    """JSON 配置文件读写与档案管理"""
-
-    CONFIG_DIR = Path.home() / ".pulseclick"
-    CONFIG_FILE = CONFIG_DIR / "config.json"
-    PROFILES_DIR = CONFIG_DIR / "profiles"
-
-    def load(self) -> dict: ...
-    def save(self, config: dict) -> None: ...
-    def get_default(self) -> dict: ...
-    def save_profile(self, name: str, config: dict) -> None: ...
-    def load_profile(self, name: str) -> dict: ...
-    def list_profiles(self) -> list[str]: ...
-    def delete_profile(self, name: str) -> None: ...
+├── config/default.json
+├── resources/
+│   ├── icon.svg
+│   └── styles.qss
+├── src/
+│   ├── app.py
+│   ├── main.py
+│   ├── core/
+│   │   ├── clicker.py
+│   │   ├── config.py
+│   │   ├── hotkey.py
+│   │   └── recorder.py
+│   ├── platform/windows/
+│   │   ├── input.py
+│   │   └── paths.py
+│   ├── ui/
+│   │   ├── dialogs.py
+│   │   ├── main_window.py
+│   │   └── styles.py
+│   └── utils/
+│       ├── config.py
+│       ├── logger.py
+│       └── tray.py
+└── tests/
 ```
 
 ## 开发规范
 
-### 代码风格
-- 遵循 PEP 8
-- 类型注解必须（Python 3.10+ 语法，使用 `X | Y` 而非 `Union`）
-- 使用 dataclass 而非 dict 传递结构化数据
-- 异步操作使用 threading，不使用 asyncio（GUI 线程安全）
+- 遵循 PEP 8，使用 Python 3.10+ 类型语法。
+- 结构化设置使用 dataclass，不用散乱 dict 传递。
+- 核心逻辑必须可注入 fake 后端测试，避免单元测试直接触发真实鼠标或全局热键。
+- GUI 线程只更新界面；后台线程通过 Qt Signal 或线程安全回调回到 UI。
+- 文件写入必须限制在项目根目录的 `data/` 或仓库工作区。
+- 不测试 GUI 渲染；测试配置、热键解析、点击引擎状态机和 Windows 路径逻辑。
 
-### 命名约定
-- 模块：snake_case
-- 类：PascalCase
-- 函数/方法：snake_case
-- 常量：UPPER_SNAKE_CASE
-- 私有成员：_前缀
+## 打包规范
 
-### 日志规范
-- 使用 Python 标准 logging 模块
-- 级别：DEBUG（开发）/ INFO（关键操作）/ WARNING（异常但可恢复）/ ERROR（严重错误）
-- 日志文件：`~/.pulseclick/pulseclick.log`
-- 日志轮转：最大 5MB，保留 3 个备份
-
-### 测试规范
-- 使用 pytest
-- 核心模块单元测试覆盖率 > 80%
-- 集成测试覆盖主流程
-- 不测试 GUI 渲染，只测试逻辑
-
-### 打包规范
-- 使用 PyInstaller 打包为单文件可执行
-- 打包命令：`python build.py` 或 `pyinstaller PulseClick.spec`
-- 目标平台：Windows (.exe)、Linux (可执行文件)、macOS (.app)
-- 打包后大小：Windows < 20MB，Linux < 25MB，macOS < 30MB
-
-## 竞品对比
-
-| 特性 | PulseClick | OP Auto Clicker | MouseClickTool | clicker.rs | rusty-autoclicker |
-|------|-----------|----------------|---------------|-----------|-------------------|
-| 跨平台 | ✅ Win/Mac/Linux | ❌ Win Only | ❌ Win Only | ✅ | ✅ |
-| 轻量级 | ✅ <50MB | ✅ 1.13MB | ✅ 16KB | ✅ ~3MB | ✅ ~5MB |
-| 现代UI | ✅ PySide6 | ✅ | ✅ | ✅ Iced | ✅ Iced |
-| 全局热键 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 坐标拾取 | ✅ | ❌ | ❌ | ❌ | ✅ |
-| 随机延迟 | ✅ | ❌ | ✅ | ✅ | ✅ |
-| 配置档案 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 系统托盘 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 开源 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 免安装 | ✅ | ✅ | ✅ | ✅ | ✅ |
-
-## 版本规划
-
-### v1.0 - 核心版
-- 点击引擎（按钮/模式/间隔/重复/位置）
-- 全局热键
-- 系统托盘
-- 配置持久化
-- 配置档案
-- 随机延迟
-- 实时状态显示
-- 打包发布
-
-### v2.0 - 增强版
-- 键盘按键自动化
-- 多显示器支持
-
-### v3.0 - 专业版
-（暂未规划）
+- 打包命令：`python build.py`
+- 目标产物：`dist\PulseClick.exe`
+- 只支持 Windows 10/11。
+- 打包脚本不得添加 Linux/macOS 分支。
+- 发布说明必须提示：自动点击工具可能被部分游戏、反作弊或安全软件限制，用户应遵守相关平台规则。
