@@ -11,7 +11,7 @@ def main() -> int:
         return 1
 
     root = Path(__file__).resolve().parent
-    icon = root / "resources" / "icon.svg"
+    icon = root / "resources" / "icon.ico"
     command = [
         sys.executable,
         "-m",
@@ -33,4 +33,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
