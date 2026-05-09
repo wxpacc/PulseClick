@@ -13,6 +13,7 @@ Use the GitHub Release build for normal users:
 
 - Latest release: [PulseClick v1.0.0](https://github.com/wxpacc/PulseClick/releases/tag/v1.0.0)
 - Direct download: [PulseClick.exe](https://github.com/wxpacc/PulseClick/releases/download/v1.0.0/PulseClick.exe)
+- SHA256: `8046fddbe5eff47343677f7e170bc4619712a1b6c699ac4c5ef362b69b0cf0c9`
 
 Run `PulseClick.exe` after downloading. On first launch, PulseClick creates its runtime data next to the executable:
 

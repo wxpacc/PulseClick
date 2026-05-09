@@ -13,6 +13,7 @@ PulseClick 是一款 Windows 10/11 专用的轻量级便携连点器。它不需
 
 - 最新发布页：[PulseClick v1.0.0](https://github.com/wxpacc/PulseClick/releases/tag/v1.0.0)
 - 直接下载：[PulseClick.exe](https://github.com/wxpacc/PulseClick/releases/download/v1.0.0/PulseClick.exe)
+- SHA256：`8046fddbe5eff47343677f7e170bc4619712a1b6c699ac4c5ef362b69b0cf0c9`
 
 下载后双击 `PulseClick.exe` 即可启动。首次运行后，程序会在 exe 同级目录自动生成：
 
