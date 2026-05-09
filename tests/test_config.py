@@ -11,7 +11,7 @@ def test_default_config_is_valid():
 
 
 def test_load_broken_json_returns_default(tmp_path):
-    manager = ConfigManager(tmp_path)
+    manager = ConfigManager(tmp_path / "data")
     manager.CONFIG_DIR.mkdir()
     manager.CONFIG_FILE.write_text("{broken", encoding="utf-8")
 
